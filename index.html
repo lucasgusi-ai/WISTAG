@@ -1,0 +1,304 @@
+<title>Lucas Gusi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spectral:ital,wght@1,300;1,400&display=swap">
+
+<style>
+:root{
+  /* tinta: preto com viés azul, como a frente do cartão */
+  --ink:        #0A0F16;
+  --ink-raised: #111823;
+  --ink-line:   #1E2836;
+
+  /* dourado dessaturado — só em traço, nunca preenchido em bloco */
+  --gold:       #C6A768;
+  --gold-dim:   #7E6A3F;
+
+  --text:       #EDF1F6;
+  --text-mute:  #8B97A8;
+  --text-faint: #586374;
+
+  --tap: 56px;
+  color-scheme: dark;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--text);
+  font-family:Archivo,"Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+  display:flex;
+  justify-content:center;
+}
+
+/* curvas de nível — o mesmo relevo da frente do cartão, quase invisível */
+.terrain{
+  position:fixed; inset:0; width:100%; height:100%;
+  pointer-events:none; z-index:0; opacity:.55;
+}
+
+.sheet{
+  position:relative; z-index:1;
+  width:100%; max-width:27rem;
+  padding:clamp(2rem,7vw,3.25rem) clamp(1.5rem,6vw,2rem) 2rem;
+  display:flex; flex-direction:column; gap:2.25rem;
+}
+
+/* ---------- marca ---------- */
+.mark{ width:112px; height:52px; display:block; }
+.mark .arc{ fill:none; stroke:var(--gold); stroke-width:1.75; stroke-linecap:round; }
+.mark .echo{ fill:none; stroke:var(--gold-dim); stroke-width:1.25; stroke-linecap:round; opacity:.55; }
+.mark .node{ fill:var(--gold); }
+
+@media (prefers-reduced-motion:no-preference){
+  .mark .arc,.mark .echo{ stroke-dasharray:250; stroke-dashoffset:250; animation:draw 1.4s cubic-bezier(.22,.61,.36,1) forwards; }
+  .mark .echo.e2{ animation-delay:.16s; }
+  .mark .echo.e3{ animation-delay:.3s; }
+  .mark .node{ opacity:0; animation:pop .5s ease forwards .95s; }
+  .mark .node.n2{ animation-delay:1.15s; }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  @keyframes pop{ to{ opacity:1; } }
+}
+
+/* ---------- identidade ---------- */
+.name{
+  font-size:clamp(2rem,9vw,2.6rem);
+  font-weight:600;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  line-height:1.05;
+  margin:0;
+  text-wrap:balance;
+}
+.rule{ width:3rem; height:1px; background:var(--gold); border:0; margin:1rem 0 .875rem; }
+.role{
+  margin:0;
+  font-size:.75rem; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--text-mute);
+}
+.pitch{
+  font-family:Spectral,Georgia,serif;
+  font-style:italic; font-weight:300;
+  font-size:1.05rem; line-height:1.55;
+  color:var(--text-mute);
+  margin:1.5rem 0 0; max-width:32ch;
+}
+
+/* ---------- ações ---------- */
+.actions{ display:flex; flex-direction:column; gap:.625rem; }
+
+.act{
+  display:flex; align-items:center; gap:.875rem;
+  min-height:var(--tap); padding:0 1.125rem;
+  background:var(--ink-raised);
+  border:1px solid var(--ink-line);
+  border-radius:3px;
+  color:var(--text); text-decoration:none;
+  font-size:.9375rem; font-weight:500;
+  transition:border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.act:hover,.act:focus-visible{ border-color:var(--gold-dim); background:#141C29; }
+.act:active{ transform:scale(.985); }
+.act:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+.act .glyph{ width:18px; height:18px; flex:none; stroke:var(--gold); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.act .go{ margin-left:auto; width:14px; height:14px; flex:none; stroke:var(--text-faint); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+/* a ação principal é a única que ganha o dourado na borda */
+.act.lead{ border-color:var(--gold-dim); background:#131B27; }
+.act.lead:hover,.act.lead:focus-visible{ border-color:var(--gold); }
+
+/* campo ainda não preenchido */
+.act.todo{ opacity:.38; }
+.act.todo .pend{
+  margin-left:auto; font-size:.625rem; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--text-faint);
+}
+
+/* ---------- painel de contato ---------- */
+.vcard{
+  border:1px solid var(--ink-line); border-radius:3px;
+  padding:1.125rem; display:flex; flex-direction:column; gap:.875rem;
+  background:var(--ink-raised);
+}
+.eyebrow{
+  margin:0; font-size:.625rem; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--text-faint);
+}
+.rows{ margin:0; display:flex; flex-direction:column; gap:.875rem; }
+.row{ display:flex; flex-direction:column; gap:.25rem; }
+.row dt{
+  font-size:.625rem; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--text-faint);
+}
+.row dd{ margin:0; font-size:.9375rem; font-variant-numeric:tabular-nums; word-break:break-word; }
+.row dd a{ color:var(--text); text-decoration:none; border-bottom:1px solid var(--gold-dim); }
+.copy{
+  align-self:flex-start; margin-top:.25rem;
+  background:none; border:1px solid var(--ink-line); border-radius:3px;
+  color:var(--text-mute); font-family:inherit;
+  font-size:.6875rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  padding:.625rem 1rem; cursor:pointer;
+  transition:color .18s ease, border-color .18s ease;
+}
+.copy:hover,.copy:focus-visible{ color:var(--gold); border-color:var(--gold-dim); }
+.copy:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+/* ---------- rodapé ---------- */
+.meta{
+  display:flex; flex-wrap:wrap; gap:.5rem 1.25rem;
+  padding-top:1.5rem; border-top:1px solid var(--ink-line);
+  font-size:.6875rem; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--text-faint);
+}
+.meta span{ font-variant-numeric:tabular-nums; }
+</style>
+
+<svg class="terrain" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g fill="none" stroke="#1B2432" stroke-width="1">
+    <path d="M-40 120 C 90 40, 250 190, 440 90"/>
+    <path d="M-40 158 C 90 78, 250 228, 440 128"/>
+    <path d="M-40 196 C 90 116, 250 266, 440 166"/>
+    <path d="M-40 234 C 90 154, 250 304, 440 204"/>
+    <path d="M-40 272 C 90 192, 250 342, 440 242"/>
+    <path d="M-40 310 C 90 230, 250 380, 440 280"/>
+    <path d="M-40 348 C 90 268, 250 418, 440 318"/>
+    <path d="M-40 386 C 90 306, 250 456, 440 356"/>
+    <path d="M-40 424 C 90 344, 250 494, 440 394"/>
+    <path d="M-40 462 C 90 382, 250 532, 440 432"/>
+    <path d="M-40 500 C 90 420, 250 570, 440 470"/>
+    <path d="M-40 538 C 90 458, 250 608, 440 508"/>
+    <path d="M-40 576 C 90 496, 250 646, 440 546"/>
+    <path d="M-40 614 C 90 534, 250 684, 440 584"/>
+    <path d="M-40 652 C 90 572, 250 722, 440 622"/>
+    <path d="M-40 690 C 90 610, 250 760, 440 660"/>
+  </g>
+</svg>
+
+<main class="sheet">
+
+  <svg class="mark" viewBox="0 0 200 92" role="img" aria-label="Marca de Lucas Gusi: dois pontos ligados por um arco ascendente">
+    <path class="echo e3" d="M18 76 Q100 -6 182 26"/>
+    <path class="echo e2" d="M18 82 Q100 10 182 38"/>
+    <path class="arc"     d="M18 88 Q100 26 182 50"/>
+    <circle class="node n1" cx="60" cy="62" r="4.5"/>
+    <circle class="node n2" cx="182" cy="50" r="4.5"/>
+  </svg>
+
+  <header>
+    <h1 class="name" id="f-nome">Lucas Gusi</h1>
+    <hr class="rule">
+    <p class="role" id="f-area">International Business</p>
+    <p class="pitch" id="f-pitch"></p>
+  </header>
+
+  <nav class="actions" id="actions" aria-label="Contatos"></nav>
+
+  <section class="vcard" aria-labelledby="vc-h">
+    <h2 class="eyebrow" id="vc-h">Contato direto</h2>
+    <dl class="rows" id="vc-list"></dl>
+    <button class="copy" id="copy" type="button">Copiar dados</button>
+  </section>
+
+  <footer class="meta" id="meta"></footer>
+
+</main>
+
+<script>
+/* ============================================================
+   PERFIL — troque os valores pelos seus.
+   Deixe "" em qualquer campo que não quiser mostrar: o botão
+   correspondente aparece esmaecido como "a preencher".
+   ============================================================ */
+const PERFIL = {
+  nome:      "Lucas Gusi",
+  area:      "International Business",
+  pitch:     "Estudante de Negócios Internacionais. Interessado em comércio exterior, mercados emergentes e no que acontece entre os dois.",
+
+  linkedin:  "https://www.linkedin.com/in/lucas-boscardin-gusi-257914364/",
+  whatsapp:  "5541991614466",
+  email:     "lucasboscardingusi@gmail.com",
+
+  cidade:    "Curitiba, BR",
+  fuso:      "UTC-3",
+  idiomas:   "PT · EN · ES"
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+const ICON = {
+  linkedin:  '<path d="M4 9h3v11H4zM5.5 4a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5zM10 20V9h3v1.6A3.6 3.6 0 0 1 16 9c2.4 0 4 1.6 4 4.6V20h-3v-6c0-1.5-.7-2.4-2-2.4S13 12.6 13 14v6z"/>',
+  whatsapp:  '<path d="M3 21l1.7-4.5A8.5 8.5 0 1 1 8 20.1z"/><path d="M8.6 9.2c.3 1.4 1.3 3 2.6 4 1.2.9 2.4 1.3 3.2 1.4l.9-1.4 2 1-.6 1.6c-1.6.5-4-.3-5.8-1.7-1.9-1.4-3.2-3.5-3.4-5.2l1.5-.9z"/>',
+  email:     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>'
+};
+const ARROW = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
+
+$("f-nome").textContent  = PERFIL.nome;
+$("f-area").textContent  = PERFIL.area;
+$("f-pitch").textContent = PERFIL.pitch;
+document.title = PERFIL.nome;
+
+const wa = (PERFIL.whatsapp || "").replace(/\D/g, "");
+
+const LINKS = [
+  { k:"linkedin",  rot:"LinkedIn",  href:PERFIL.linkedin, lead:true },
+  { k:"whatsapp",  rot:"WhatsApp",  href: wa ? "https://wa.me/" + wa : "" },
+  { k:"email",     rot:"E-mail",    href: PERFIL.email ? "mailto:" + PERFIL.email : "" }
+];
+
+$("actions").innerHTML = LINKS.map((l) => {
+  const falta = !l.href;
+  const tag   = falta ? "span" : "a";
+  const attrs = falta ? "" : ' href="' + esc(l.href) + '" target="_blank" rel="noopener"';
+  const cls   = "act" + (l.lead && !falta ? " lead" : "") + (falta ? " todo" : "");
+  const tail  = falta ? '<span class="pend">a preencher</span>' : ARROW;
+  return "<" + tag + ' class="' + cls + '"' + attrs + ">"
+       + '<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">' + ICON[l.k] + "</svg>"
+       + "<span>" + esc(l.rot) + "</span>"
+       + tail
+       + "</" + tag + ">";
+}).join("");
+
+/* +55 41 99161-4466 lê melhor que +5541991614466 */
+const telBonito = (d) => /^55\d{10,11}$/.test(d)
+  ? "+55 " + d.slice(2, 4) + " " + d.slice(4, -4) + "-" + d.slice(-4)
+  : "+" + d;
+
+const CAMPOS = [
+  ["Nome",     PERFIL.nome,            ""],
+  ["E-mail",   PERFIL.email,           PERFIL.email ? "mailto:" + PERFIL.email : ""],
+  ["Telefone", wa ? telBonito(wa) : "", wa ? "tel:+" + wa : ""],
+  ["Base",     [PERFIL.cidade, PERFIL.fuso].filter(Boolean).join(" · "), ""]
+].filter((c) => c[1]);
+
+$("vc-list").innerHTML = CAMPOS.map(([rot, val, href]) =>
+  '<div class="row"><dt>' + esc(rot) + "</dt><dd>"
+  + (href ? '<a href="' + esc(href) + '">' + esc(val) + "</a>" : esc(val))
+  + "</dd></div>"
+).join("");
+
+$("copy").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  const txt = CAMPOS.map(([r, v]) => r + ": " + v).join("\n");
+  try {
+    await navigator.clipboard.writeText(txt);
+    btn.textContent = "Copiado";
+  } catch {
+    const r = document.createRange();
+    r.selectNodeContents($("vc-list"));
+    const s = getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    btn.textContent = "Selecionado — copie";
+  }
+  setTimeout(() => { btn.textContent = "Copiar dados"; }, 2200);
+});
+
+$("meta").innerHTML = [PERFIL.idiomas, PERFIL.cidade, PERFIL.fuso]
+  .filter(Boolean).map((v) => "<span>" + esc(v) + "</span>").join("");
+</script>
