@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F16">
+<meta name="description" content="Lucas Gusi — International Business. Comércio exterior, importação e automação.">
 <title>Lucas Gusi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +37,7 @@ body{
   color:var(--text);
   font-family:Archivo,"Segoe UI",system-ui,sans-serif;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;   /* iOS não infla o texto sozinho */
   min-height:100dvh;
   display:flex;
   justify-content:center;
@@ -41,11 +49,17 @@ body{
   pointer-events:none; z-index:0; opacity:.55;
 }
 
+/* ocupa a tela toda: centraliza quando cabe, rola quando não cabe */
 .sheet{
   position:relative; z-index:1;
   width:100%; max-width:27rem;
-  padding:clamp(2rem,7vw,3.25rem) clamp(1.5rem,6vw,2rem) 2rem;
-  display:flex; flex-direction:column; gap:2.25rem;
+  min-height:100dvh;
+  padding:calc(clamp(2rem,7vw,3.25rem) + env(safe-area-inset-top))
+          calc(clamp(1.5rem,6vw,2rem) + env(safe-area-inset-right))
+          calc(2rem + env(safe-area-inset-bottom))
+          calc(clamp(1.5rem,6vw,2rem) + env(safe-area-inset-left));
+  display:flex; flex-direction:column; justify-content:center;
+  gap:clamp(1.5rem,5vh,2.25rem);
 }
 
 /* ---------- marca ---------- */
@@ -161,6 +175,8 @@ body{
 }
 .meta span{ font-variant-numeric:tabular-nums; }
 </style>
+</head>
+<body>
 
 <svg class="terrain" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
   <g fill="none" stroke="#1B2432" stroke-width="1">
@@ -309,3 +325,5 @@ $("copy").addEventListener("click", async (e) => {
 $("meta").innerHTML = [PERFIL.idiomas, PERFIL.cidade, PERFIL.fuso]
   .filter(Boolean).map((v) => "<span>" + esc(v) + "</span>").join("");
 </script>
+</body>
+</html>
