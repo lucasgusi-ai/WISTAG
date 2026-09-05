@@ -1,7 +1,7 @@
 <title>Lucas Gusi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spectral:ital,wght@1,300;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
 
 <style>
 :root{
@@ -81,13 +81,17 @@ body{
   letter-spacing:.28em; text-transform:uppercase;
   color:var(--text-mute);
 }
+/* três termos, não uma frase: o olho pega em dois segundos */
 .pitch{
-  font-family:Spectral,Georgia,serif;
-  font-style:italic; font-weight:300;
-  font-size:1.05rem; line-height:1.55;
-  color:var(--text-mute);
-  margin:1.5rem 0 0; max-width:32ch;
+  margin:1.375rem 0 0;
+  font-size:clamp(1.0625rem,4.6vw,1.2rem);
+  font-weight:500; line-height:1.45;
+  letter-spacing:.005em;
+  color:var(--text);
+  max-width:24ch;
 }
+.pitch span{ white-space:nowrap; }
+.pitch .sep{ color:var(--gold); font-style:normal; margin:0 .5rem; }
 
 /* ---------- ações ---------- */
 .actions{ display:flex; flex-direction:column; gap:.625rem; }
@@ -217,7 +221,8 @@ body{
 const PERFIL = {
   nome:      "Lucas Gusi",
   area:      "International Business",
-  pitch:     "Estudante de Negócios Internacionais. Interessado em comércio exterior, mercados emergentes e no que acontece entre os dois.",
+  /* poucos termos, sem hard skill — o que você faz, não o que você opera */
+  termos:    ["Comércio exterior", "Importação", "Automação"],
 
   linkedin:  "https://www.linkedin.com/in/lucas-boscardin-gusi-257914364/",
   whatsapp:  "5541991614466",
@@ -240,7 +245,9 @@ const ARROW = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M
 
 $("f-nome").textContent  = PERFIL.nome;
 $("f-area").textContent  = PERFIL.area;
-$("f-pitch").textContent = PERFIL.pitch;
+$("f-pitch").innerHTML   = PERFIL.termos
+  .map((t) => "<span>" + esc(t) + "</span>")
+  .join('<i class="sep">·</i>');
 document.title = PERFIL.nome;
 
 const wa = (PERFIL.whatsapp || "").replace(/\D/g, "");
